@@ -11,6 +11,7 @@ public:
 	void useResource(double amount) override;
 	void displayResource() override;
 
+   
 };
 
 #endif // !INTERNET_H

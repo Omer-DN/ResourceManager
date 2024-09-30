@@ -1,23 +1,29 @@
 #include "Internet.h"
-#include <iostream>
 
-using namespace std;
-
-
-Internet::Internet(double amount) : Resource("Internet", amount) {}
-
+Internet::Internet(double initialAmount) :
+    Resource("Internet",initialAmount) {}
 
 void Internet::useResource(double amount) {
-    if (resourceAmount >= amount) {
-        updateUsage(amount); 
-        cout << "Used " << amount << " MB of internet. Remaining: " << getUsage() << endl;
+    lock_guard<mutex> lock(mtx);
+    if (amount <= getUsage()) {
+        // עדכון השימוש
+        double newUsage = getUsage() - amount;
+        updateUsage(newUsage);
+        cout << "Used " << amount << " units of internet.\n";
     }
     else {
-        cout << "Not enough internet available!" << endl;
+        cout << "Not enough internet available!\n";
     }
 }
 
+void Internet::replenishResource(double amount) {
+    lock_guard<mutex> lock(mtx);
+    double newAmount = getUsage() + amount;
+    updateUsage(newAmount);
+    cout << "Replenished " << amount << " units of internet.\n";
+}
 
 void Internet::displayResource() {
-    cout << "Internet Resource - Amount: " << getUsage() << endl;
+    lock_guard<mutex> lock(mtx);
+    cout << "Internet usage: " << getUsage() << " units.\n";
 }

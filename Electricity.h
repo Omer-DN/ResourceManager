@@ -3,6 +3,8 @@
 #define ELECTRICITY_H
 
 #include "Resource.h"
+#include <mutex>
+
 
 class Electricity:public Resource
 {
@@ -11,6 +13,8 @@ public:
 	void useResource(double amount) override;
 	void displayResource() override;
 
+private:
+	mutex mtx;
 };
 
 

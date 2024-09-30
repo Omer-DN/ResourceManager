@@ -1,21 +1,27 @@
 #include "Water.h"
-#include <iostream>
 
-using namespace std;
-
-Water::Water(double amount) : Resource("Water", amount) {}
-
+Water::Water(double amount) : Resource(amount) {}
 
 void Water::useResource(double amount) {
-    if (resourceAmount >= amount) {
-        updateUsage(amount); 
-        cout << "Used " << amount << " liters of water. Remaining: " << getUsage() << endl;
+    lock_guard<mutex> lock(mtx); 
+    if (amount <= getUsage()) {
+        double newUsage = getUsage() - amount;
+        updateUsage(newUsage);
+        cout << "Used " << amount << " units of water.\n";
     }
     else {
-        cout << "Not enough water available!" << endl;
+        cout << "Not enough water available!\n";
     }
 }
 
+void Water::replenishResource(double amount) {
+    lock_guard<mutex> lock(mtx); 
+    double newAmount = getUsage() + amount;
+    updateUsage(newAmount);
+    cout << "Replenished " << amount << " units of water.\n";
+}
+
 void Water::displayResource() {
-    cout << "Water Resource - Amount: " << getUsage() << endl;
+    lock_guard<mutex> lock(mtx);
+    cout << "Water usage: " << getUsage() << " units.\n";
 }

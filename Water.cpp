@@ -1,6 +1,7 @@
 #include "Water.h"
 
-Water::Water(double amount) : Resource(amount) {}
+Water::Water(double amount) :
+    Resource("Water", amount) {}
 
 void Water::useResource(double amount) {
     lock_guard<mutex> lock(mtx); 
